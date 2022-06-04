@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { parse, serialize } from '@tinyhttp/cookie'
 import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -6,17 +6,8 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 import { useAppContext } from '../contexts/AppContext'
-
-interface NotionTokenResponse {
-  access_token: string
-  workspace_id: string
-  workspace_name: string
-  workspace_icon: string
-  bot_id: string
-  owner: {
-    [key: string]: string
-  }
-}
+import { login } from '../utils/authFunctions'
+import { NOTION_CLIENT_ID } from '../utils/envValue'
 
 interface Props {
   accessToken: string
@@ -26,49 +17,38 @@ interface Props {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const NOTION_TOKEN_URL = 'https://api.notion.com/v1/oauth/token'
-  const NOTION_CLIENT_ID: string =
-    process.env.NEXT_PUBLIC_NOTION_CLIENT_ID || ''
-  const NOTION_CLIENT_SECRET: string =
-    process.env.NEXT_PUBLIC_NOTION_CLIENT_SECRET || ''
-  const { query } = context
-  if (!query?.code) {
-    return {
-      props: {
-        user: null,
-        accessToken: null,
-      },
-    }
-  }
+  const { query, req, res } = context
   try {
-    const res = await axios.post<NotionTokenResponse>(
-      NOTION_TOKEN_URL,
-      {
-        grant_type: 'authorization_code',
-        code: query.code,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Basic ${Buffer.from(
-            `${NOTION_CLIENT_ID}:${NOTION_CLIENT_SECRET}`,
-            'utf8'
-          ).toString('base64')}`,
-        },
-      }
-    )
-    if (res.status !== 200) {
-      return {
-        props: {
-          user: null,
-          accessToken: null,
-        },
-      }
+    const parsedCookies = parse(req?.headers?.cookie || '')
+    const cookieToken: string = parsedCookies?.accessToken
+    const loginInfo = await login(cookieToken, query?.code)
+    if (!loginInfo?.accessToken) {
+      res.setHeader(
+        'Set-Cookie',
+        serialize('accessToken', '', {
+          maxAge: 30 * 24 * 60 * 60,
+          httpOnly: true,
+          expires: new Date(0),
+          secure: process.env.NODE_ENV !== 'development',
+          sameSite: 'strict',
+          path: '/',
+        })
+      )
+    } else {
+      res.setHeader(
+        'Set-Cookie',
+        serialize('accessToken', loginInfo.accessToken, {
+          maxAge: 30 * 24 * 60 * 60,
+          httpOnly: true,
+          secure: process.env.NODE_ENV !== 'development',
+          sameSite: 'strict',
+          path: '/',
+        })
+      )
     }
     return {
       props: {
-        user: res?.data?.owner.user,
-        accessToken: res?.data?.access_token,
+        ...loginInfo,
       },
     }
   } catch (err) {
@@ -85,19 +65,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Home: NextPage<Props> = (props) => {
   const { user, accessToken } = props
   const router = useRouter()
-  const { setUser, setNotionToken, notionToken } = useAppContext()
+  const { setUser, setNotionToken } = useAppContext()
   useEffect(() => {
-    if (notionToken) {
-      router.push('/dashboard')
-    }
-    if (accessToken) {
+    if (accessToken && user) {
       setNotionToken(accessToken)
       setUser(user)
       router.push('/dashboard')
+    } else {
+      setNotionToken(null)
+      setUser(null)
     }
-  }, [accessToken, user, setNotionToken, setUser, notionToken, router])
-  const NOTION_CLIENT_ID: string =
-    process.env.NEXT_PUBLIC_NOTION_CLIENT_ID || ''
+  }, [accessToken, user, setNotionToken, setUser, router])
   const notionLoginUri = {
     pathname: 'https://api.notion.com/v1/oauth/authorize',
     query: {

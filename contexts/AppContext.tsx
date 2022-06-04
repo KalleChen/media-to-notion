@@ -5,19 +5,25 @@ interface AppContextInterface {
   setNotionToken: (token: string | null) => void
   user: {
     [key: string]: any
-  }
-  setUser: (user: { [key: string]: any }) => void
+  } | null
+  setUser: (user: { [key: string]: any } | null) => void
 }
 
 interface Props {
   children: React.ReactNode
 }
+const initialValue: AppContextInterface = {
+  notionToken: '',
+  setNotionToken: () => {},
+  user: null,
+  setUser: () => {},
+}
 
-const AppContext = createContext<AppContextInterface>(null)
+const AppContext = createContext<AppContextInterface>(initialValue)
 
 export const AppContextProvider: React.FC<Props> = ({ children }) => {
   const [notionToken, setNotionToken] = useState<string | null>(null)
-  const [user, setUser] = useState<{ [key: string]: any }>({})
+  const [user, setUser] = useState<{ [key: string]: any } | null>({})
   const contextValues = {
     notionToken: notionToken,
     setNotionToken: setNotionToken,

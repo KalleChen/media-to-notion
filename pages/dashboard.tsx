@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
@@ -13,7 +14,12 @@ const Dashboard: NextPage = () => {
     }
   }, [notionToken, router])
 
-  return <div>hi</div>
+  return (
+    <div>
+      hi
+      <Link href="/api/logout">logout</Link>
+    </div>
+  )
 }
 
 export default Dashboard

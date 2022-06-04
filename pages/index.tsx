@@ -26,7 +26,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       res.setHeader(
         'Set-Cookie',
         serialize('accessToken', '', {
-          maxAge: 30 * 24 * 60 * 60,
           httpOnly: true,
           expires: new Date(0),
           secure: process.env.NODE_ENV !== 'development',

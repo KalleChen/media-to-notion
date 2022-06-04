@@ -64,22 +64,20 @@ export const login = async (
   cookieToken: string,
   queryToken: string | string[] | undefined
 ) => {
-  let user = await getNotionUser(cookieToken)
-  let accessToken = cookieToken
+  let user = null
+  let accessToken = null
+  if (cookieToken) {
+    user = await getNotionUser(cookieToken)
+    accessToken = cookieToken
+  }
   if (!user) {
-    if (typeof queryToken !== 'string') {
-      return {
-        user: null,
-        accessToken: null,
-      }
+    if (typeof queryToken === 'string') {
+      accessToken = await getAccessToken(queryToken)
+      user = await getNotionUser(accessToken)
     }
-    accessToken = await getAccessToken(queryToken)
-    user = await getNotionUser(accessToken)
     if (!user) {
-      return {
-        user: null,
-        accessToken: null,
-      }
+      user = null
+      accessToken = null
     }
   }
   return {

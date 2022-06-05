@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
+import DatabaseSelect from '../components/DatabaseSelect'
 import { useAppContext } from '../contexts/AppContext'
 
 const Dashboard: NextPage = () => {
@@ -18,6 +19,7 @@ const Dashboard: NextPage = () => {
     <div>
       hi
       <Link href="/api/logout">logout</Link>
+      <DatabaseSelect />
     </div>
   )
 }

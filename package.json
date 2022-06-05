@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^1.6.4",
+    "@heroicons/react": "^1.0.6",
     "@notionhq/client": "^1.0.4",
     "@tinyhttp/cookie": "^2.0.3",
     "axios": "^0.27.2",

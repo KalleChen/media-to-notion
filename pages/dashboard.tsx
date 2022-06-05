@@ -1,19 +1,49 @@
-import type { NextPage } from 'next'
+import { parse } from '@tinyhttp/cookie'
+import type { GetServerSideProps, NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 import DatabaseSelect from '../components/DatabaseSelect'
 import { useAppContext } from '../contexts/AppContext'
+import { login } from '../utils/authFunctions'
 
-const Dashboard: NextPage = () => {
-  const router = useRouter()
-  const { notionToken } = useAppContext()
-  useEffect(() => {
-    if (!notionToken) {
-      router.push('/')
+interface Props {
+  accessToken: string
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { req } = context
+  try {
+    const parsedCookies = parse(req?.headers?.cookie || '')
+    const cookieToken: string = parsedCookies?.accessToken
+    const loginInfo = await login(cookieToken, '')
+    return {
+      props: {
+        accessToken: loginInfo.accessToken,
+      },
     }
-  }, [notionToken, router])
+  } catch (err) {
+    console.error(err)
+    return {
+      props: {
+        accessToken: null,
+      },
+    }
+  }
+}
+
+const Dashboard: NextPage<Props> = (props) => {
+  const { accessToken } = props
+  const router = useRouter()
+  const { setNotionToken } = useAppContext()
+  useEffect(() => {
+    if (!accessToken) {
+      router.push('/')
+    } else {
+      setNotionToken(accessToken)
+    }
+  }, [setNotionToken, router, accessToken])
 
   return (
     <div>

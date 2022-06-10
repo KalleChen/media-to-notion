@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 import DatabaseSelect from '../components/DatabaseSelect'
+import MediaSearch from '../components/MediaSearch'
+import PropertySelect from '../components/PropertySelect'
 import { useAppContext } from '../contexts/AppContext'
 import { login } from '../utils/authFunctions'
 
@@ -47,9 +49,10 @@ const Dashboard: NextPage<Props> = (props) => {
 
   return (
     <div>
-      hi
       <Link href="/api/logout">logout</Link>
       <DatabaseSelect />
+      <PropertySelect />
+      <MediaSearch />
     </div>
   )
 }

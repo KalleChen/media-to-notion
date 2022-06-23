@@ -11,7 +11,7 @@ import {
 import { DatabaseResponse } from '../pages/api/notion/database'
 import { PropertyResnponse } from '../pages/api/notion/property'
 
-export interface AppContextInterface {
+export interface NotionContextInterface {
   notionToken: string | null
   setNotionToken: (token: string | null) => void
   user: {
@@ -33,7 +33,7 @@ export interface AppContextInterface {
 interface Props {
   children: React.ReactNode
 }
-const initialValue: AppContextInterface = {
+const initialValue: NotionContextInterface = {
   notionToken: '',
   setNotionToken: () => {},
   user: null,
@@ -47,20 +47,20 @@ const initialValue: AppContextInterface = {
   handleChangePropertyMapping: () => {},
 }
 
-const AppContext = createContext<AppContextInterface>(initialValue)
+const NotionContext = createContext<NotionContextInterface>(initialValue)
 
-export const AppContextProvider: React.FC<Props> = ({ children }) => {
+export const NotionContextProvider: React.FC<Props> = ({ children }) => {
   const [notionToken, setNotionToken] = useState<string | null>(null)
   const [user, setUser] = useState<{ [key: string]: any } | null>({})
   const [databases, setDatabases] =
-    useState<AppContextInterface['databases']>(null)
+    useState<NotionContextInterface['databases']>(null)
   const [selectedDatabaseId, setSelectedDatabaseId] = useState<string | null>(
     null
   )
   const [properties, setProperties] =
-    useState<AppContextInterface['properties']>(null)
+    useState<NotionContextInterface['properties']>(null)
   const [propertiesMapping, setPropertiesMapping] = useState<
-    AppContextInterface['propertiesMapping']
+    NotionContextInterface['propertiesMapping']
   >({})
   const getDatabase = useCallback(async (): Promise<void> => {
     if (notionToken) {
@@ -92,7 +92,7 @@ export const AppContextProvider: React.FC<Props> = ({ children }) => {
   const handleChangePropertyMapping = useCallback(
     (key: string, value: CreatePageParameters['properties']) => {
       setPropertiesMapping(
-        (prevState: AppContextInterface['propertiesMapping']) => ({
+        (prevState: NotionContextInterface['propertiesMapping']) => ({
           ...prevState,
           [key]: value,
         })
@@ -119,8 +119,10 @@ export const AppContextProvider: React.FC<Props> = ({ children }) => {
     handleChangePropertyMapping,
   }
   return (
-    <AppContext.Provider value={contextValues}>{children}</AppContext.Provider>
+    <NotionContext.Provider value={contextValues}>
+      {children}
+    </NotionContext.Provider>
   )
 }
 
-export const useAppContext = () => useContext(AppContext)
+export const useNotionContext = () => useContext(NotionContext)

@@ -2,12 +2,12 @@ import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import { Fragment, useEffect, useMemo } from 'react'
 
-import { useAppContext } from '../contexts/AppContext'
+import { useNotionContext } from '../contexts/NotionContext'
 import { DatabaseResponse } from '../pages/api/notion/database'
 
 const DatabaseSelect: React.FC = () => {
   const { getDatabase, selectedDatabaseId, setSelectedDatabaseId, databases } =
-    useAppContext()
+    useNotionContext()
   useEffect(() => {
     getDatabase()
   }, [getDatabase])

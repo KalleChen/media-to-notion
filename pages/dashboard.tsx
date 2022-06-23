@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import DatabaseSelect from '../components/DatabaseSelect'
 import MediaUrlInput from '../components/Media/MediaUrlInput'
 import PropertySelect from '../components/PropertySelect'
-import { useAppContext } from '../contexts/AppContext'
+import { useNotionContext } from '../contexts/NotionContext'
 import { login } from '../utils/authFunctions'
 
 interface Props {
@@ -38,7 +38,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Dashboard: NextPage<Props> = (props) => {
   const { accessToken } = props
   const router = useRouter()
-  const { setNotionToken } = useAppContext()
+  const { setNotionToken } = useNotionContext()
   useEffect(() => {
     if (!accessToken) {
       router.push('/')

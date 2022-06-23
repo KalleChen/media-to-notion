@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
-import { useAppContext } from '../contexts/AppContext'
+import { useNotionContext } from '../contexts/NotionContext'
 import { login } from '../utils/authFunctions'
 import { NOTION_CLIENT_ID } from '../utils/envValue'
 
@@ -64,7 +64,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Home: NextPage<Props> = (props) => {
   const { user, accessToken } = props
   const router = useRouter()
-  const { setUser, setNotionToken } = useAppContext()
+  const { setUser, setNotionToken } = useNotionContext()
   useEffect(() => {
     if (accessToken && user) {
       setNotionToken(accessToken)

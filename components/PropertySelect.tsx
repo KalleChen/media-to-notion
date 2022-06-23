@@ -1,7 +1,7 @@
-import { useAppContext } from '../contexts/AppContext'
+import { useNotionContext } from '../contexts/NotionContext'
 
 const PropertySelect: React.FC = () => {
-  const { properties } = useAppContext()
+  const { properties } = useNotionContext()
   return (
     <div>
       {properties &&

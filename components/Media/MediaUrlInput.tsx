@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useMediaContext } from '../../contexts/MediaContext'
 
 const MediaUrlInput = () => {
-  const { setSelectedMediaId, selectedMedia } = useMediaContext()
+  const { setSelectedMediaId } = useMediaContext()
   const [mediaUrl, setMediaUrl] = useState<string>('')
 
   useEffect(() => {

@@ -4,9 +4,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
-import DatabaseSelect from '../components/DatabaseSelect'
 import MediaUrlInput from '../components/Media/MediaUrlInput'
-import PropertySelect from '../components/PropertySelect'
+import DatabaseSelect from '../components/Notion/DatabaseSelect'
+import PropertySelect from '../components/Notion/PropertySelect'
 import { useNotionContext } from '../contexts/NotionContext'
 import { login } from '../utils/authFunctions'
 
@@ -50,9 +50,9 @@ const Dashboard: NextPage<Props> = (props) => {
   return (
     <div>
       <Link href="/api/logout">logout</Link>
+      <MediaUrlInput />
       <DatabaseSelect />
       <PropertySelect />
-      <MediaUrlInput />
     </div>
   )
 }

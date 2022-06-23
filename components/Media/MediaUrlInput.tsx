@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { useMediaContext } from '../../contexts/MediaContext'
+import Input from '../UI/Input'
 
 const MediaUrlInput = () => {
   const { setSelectedMediaId } = useMediaContext()
@@ -14,7 +15,9 @@ const MediaUrlInput = () => {
   }, [mediaUrl, setSelectedMediaId])
 
   return (
-    <input value={mediaUrl} onChange={(e) => setMediaUrl(e?.target?.value)} />
+    <div className="w-1/2">
+      <Input value={mediaUrl} onChange={(v: string) => setMediaUrl(v)} />
+    </div>
   )
 }
 

@@ -2,7 +2,6 @@ import { useAppContext } from '../contexts/AppContext'
 
 const PropertySelect: React.FC = () => {
   const { properties } = useAppContext()
-  console.log(properties)
   return (
     <div>
       {properties &&

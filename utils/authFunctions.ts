@@ -40,7 +40,7 @@ export const getAccessToken = async (code: string): Promise<string> => {
     }
     return res?.data?.access_token
   } catch (e) {
-    console.log(e)
+    console.error(e)
     return ''
   }
 }
@@ -55,7 +55,7 @@ export const getNotionUser = async (accessToken: string) => {
     }
     return null
   } catch (e) {
-    console.log(e)
+    console.error(e)
     return null
   }
 }

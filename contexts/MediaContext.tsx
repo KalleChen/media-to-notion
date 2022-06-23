@@ -13,6 +13,16 @@ interface Props {
   children: React.ReactNode
 }
 
+export const mediaContentFields = [
+  'fullTitle',
+  'genres',
+  'imdbRating',
+  'image',
+  'year',
+  'title',
+  'type',
+]
+
 export interface MediaContextInterface {
   medias: Record<string, string>[]
   searchMedia: (query: string) => void
